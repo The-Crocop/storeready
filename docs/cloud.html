@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>StoreReady Cloud — Release history and approved baselines</title>
-  <meta name="description" content="How StoreReady Cloud keeps release history and compares new builds with the last approved release without uploading your IPA or AAB.">
+  <meta name="description" content="StoreReady Cloud provides GitHub sign-in, project-scoped CI tokens, release history and approved-release baselines without uploading your IPA or AAB.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,37 +11,48 @@
 <main class="docs-layout">
   <aside class="sidebar"><strong>Documentation</strong><a href="getting-started.html">Getting started</a><a href="github-action.html">GitHub Action</a><a class="active" href="cloud.html">StoreReady Cloud</a><a href="reference.html">CLI reference</a><a href="security.html">Security</a><a href="privacy.html">Privacy</a></aside>
   <article class="docs">
-    <p class="eyebrow">PAID PLATFORM</p><h1>StoreReady Cloud</h1>
-    <p class="lead-doc">Cloud adds memory to the local scanner: release history, approved baselines, team workflows and eventually store integrations.</p>
+    <p class="eyebrow">CLOUD PLATFORM</p><h1>StoreReady Cloud</h1>
+    <p class="lead-doc">Cloud adds release memory to the local scanner: GitHub sign-in, workspaces, projects, revocable CI tokens, release history and approved baselines.</p>
+
+    <h2>First-run setup</h2>
+    <ol>
+      <li>Sign in with GitHub.</li>
+      <li>Create a StoreReady workspace.</li>
+      <li>Create a project with a stable project key, for example <code>mobile-app</code>.</li>
+      <li>Generate a CI token for that project.</li>
+      <li>Copy the token immediately. StoreReady only stores its hash and will not show the full secret again.</li>
+      <li>Save the token in your CI secret store.</li>
+    </ol>
+
+    <div class="note"><strong>Project scoped:</strong> a CI token can only read and write scan/baseline data for the project that created it. Tokens can be revoked independently.</div>
 
     <h2>The artifact stays local</h2>
-    <p>StoreReady scans the IPA/AAB on the developer machine or CI runner. The current Cloud contract receives normalized release metadata rather than the binary itself.</p>
+    <p>StoreReady scans the IPA/AAB on the developer machine or CI runner. Cloud receives normalized release metadata rather than the application binary.</p>
     <div class="flow">
       <div><strong>IPA / AAB</strong><span>stays in CI</span></div><b>→</b>
-      <div><strong>StoreReady CLI</strong><span>local scan</span></div><b>→</b>
+      <div><strong>StoreReady CLI</strong><span>local scan + diff</span></div><b>→</b>
       <div><strong>Normalized result</strong><span>hash + signals</span></div><b>→</b>
       <div><strong>Cloud</strong><span>history + baseline</span></div>
     </div>
 
-    <h2>Approve a release</h2>
-    <p>After Apple or Google approves an exact release artifact, record it as the baseline for that project and platform:</p>
-    <pre><code>export STOREREADY_CLOUD_URL=http://localhost:8080
-export STOREREADY_API_KEY=local-dev-key
+    <h2>Configure the CLI</h2>
+    <pre><code>export STOREREADY_CLOUD_URL=https://your-cloud.example
+export STOREREADY_API_KEY=srp_...
 
-storeready approve \
-  --project mobile-app \
-  MyApp-2.3.0.ipa</code></pre>
-
-    <h2>Push the next release</h2>
-    <pre><code>storeready push \
+storeready push \
   --project mobile-app \
   MyApp-2.4.0.ipa</code></pre>
-    <p>The CLI fetches the latest approved baseline automatically, applies the diff locally, then uploads the normalized scan result.</p>
+
+    <h2>Approve a store release</h2>
+    <p>After Apple or Google approves an exact release artifact, record it as the project/platform baseline:</p>
+    <pre><code>storeready approve \
+  --project mobile-app \
+  MyApp-2.3.0.ipa</code></pre>
+    <p>The next <code>push</code> automatically fetches that approved baseline and applies the privacy-sensitive diff locally before uploading the normalized result.</p>
 
     <h2>What is currently sent</h2>
     <ul>
-      <li>Artifact filename</li>
-      <li>SHA-256 of the artifact</li>
+      <li>Artifact filename and SHA-256</li>
       <li>Platform</li>
       <li>Passed / warning / blocker counts</li>
       <li>Detected privacy-sensitive permission signals</li>
@@ -51,20 +62,27 @@ storeready approve \
     <h2>What is not currently sent</h2>
     <ul>
       <li>The IPA or AAB binary</li>
-      <li>Your source code</li>
+      <li>Your application source code</li>
       <li>Signing certificates or provisioning keys</li>
     </ul>
 
-    <h2>Alpha status</h2>
-    <div class="note warning-note"><strong>Cloud is under active development.</strong> The current development API key is an alpha mechanism. Production SaaS authentication will use user sign-in plus scoped, revocable CI tokens.</div>
+    <h2>Authentication</h2>
+    <div class="grid grid-2 compact-grid">
+      <div class="mini-card"><strong>Humans</strong><span>GitHub OAuth login and browser session.</span></div>
+      <div class="mini-card"><strong>CI</strong><span>Hashed, revocable <code>srp_</code> project token.</span></div>
+      <div class="mini-card"><strong>Browser writes</strong><span>CSRF-protected same-origin requests.</span></div>
+      <div class="mini-card"><strong>Artifacts</strong><span>Remain on your machine or CI runner.</span></div>
+    </div>
 
     <h2>Roadmap</h2>
     <div class="grid grid-2 compact-grid">
-      <div class="mini-card"><strong>Project-scoped CI tokens</strong><span>Hashed and revocable credentials.</span></div>
-      <div class="mini-card"><strong>GitHub App</strong><span>Native PR checks and release context.</span></div>
-      <div class="mini-card"><strong>App Store Connect</strong><span>Correlate release metadata and approval state.</span></div>
+      <div class="mini-card"><strong>GitHub App</strong><span>Native PR checks and repository context.</span></div>
+      <div class="mini-card"><strong>App Store Connect</strong><span>Correlate metadata and approval state.</span></div>
       <div class="mini-card"><strong>Google Play Console</strong><span>Cross-check Play release declarations.</span></div>
+      <div class="mini-card"><strong>Team membership</strong><span>Invites and multi-user organizations.</span></div>
     </div>
+
+    <div class="next"><strong>Next:</strong> <a href="github-action.html">Put the project token into GitHub Actions →</a></div>
   </article>
 </main>
 <footer><div class="footer-brand"><span class="logo">✓</span> StoreReady</div><div class="footer-links"><a href="security.html">Security</a><a href="privacy.html">Privacy</a><a href="https://github.com/The-Crocop/storeready">GitHub</a></div></footer>
