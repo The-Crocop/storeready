@@ -5,17 +5,21 @@
 <header class="topbar"><a class="brand" href="./"><span class="logo">✓</span><span>StoreReady</span></a><nav><a href="getting-started.html">Docs</a><a href="github-action.html">GitHub Action</a><a href="cloud.html">Cloud</a><a href="reference.html">CLI reference</a><a class="button button-small" href="https://github.com/The-Crocop/storeready">GitHub</a></nav></header>
 <main class="legal">
   <p class="eyebrow">TRUST</p><h1>Security</h1>
-  <p class="lead-doc">StoreReady is designed around local artifact inspection and minimal Cloud data.</p>
+  <p class="lead-doc">StoreReady is designed around local artifact inspection, minimal Cloud data and project-scoped automation credentials.</p>
   <h2>Local-first scanning</h2>
-  <p>The open-source CLI inspects IPA/AAB artifacts locally. Cloud-enabled workflows currently send normalized findings rather than the application binary.</p>
+  <p>The open-source CLI inspects IPA/AAB artifacts locally. Cloud-enabled workflows send normalized findings rather than the application binary.</p>
+  <h2>Human authentication</h2>
+  <p>StoreReady Cloud uses GitHub OAuth for human sign-in. Browser state-changing requests use CSRF protection and the dashboard/API are designed to share one public origin.</p>
+  <h2>CI tokens</h2>
+  <p>CI credentials use the <code>srp_</code> prefix and are scoped to a single StoreReady project. New tokens are generated from 256 bits of cryptographic randomness. The full token is shown once; Cloud persists a SHA-256 hash and a short display prefix instead of the raw secret. Tokens record last use and can be revoked individually.</p>
   <h2>Secrets</h2>
-  <p>Cloud API tokens should be provided through environment variables or CI secret stores. Do not commit tokens, signing certificates, App Store credentials or Play Console credentials to a repository.</p>
-  <h2>Cloud alpha</h2>
-  <p>The current Cloud authentication mechanism is intended for development and alpha testing. It will be replaced by scoped, revocable project tokens before public beta.</p>
+  <p>Store project tokens in your CI secret manager. Do not commit StoreReady tokens, signing certificates, App Store credentials or Google Play credentials to source control.</p>
+  <h2>Infrastructure</h2>
+  <p>Production configuration is designed for HTTPS, secure session cookies, PostgreSQL and a container runtime. The development/bootstrap API key is disabled by default and is not intended for production.</p>
   <h2>Responsible disclosure</h2>
   <p>If you discover a vulnerability, please avoid opening a public issue containing exploit details. Contact the project maintainer privately through the contact information associated with the GitHub repository.</p>
-  <h2>Dependency and build checks</h2>
-  <p>The CLI is built and tested on Linux and macOS in GitHub Actions. StoreReady Cloud separately validates Spring AOT compatibility and its Angular production build.</p>
+  <h2>Build checks</h2>
+  <p>The CLI is built and tested on Linux and macOS. StoreReady Cloud validates backend tests, Spring AOT compatibility, Angular production builds and its production container build in GitHub Actions.</p>
   <p class="updated">Last updated: 4 October 2026.</p>
 </main>
 <footer><div class="footer-brand"><span class="logo">✓</span> StoreReady</div><div class="footer-links"><a href="privacy.html">Privacy</a><a href="https://github.com/The-Crocop/storeready">GitHub</a></div></footer>

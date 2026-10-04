@@ -7,7 +7,7 @@
 
 **Documentation:** https://the-crocop.github.io/storeready/
 
-StoreReady is a local-first release preflight engine. The open-source CLI and GitHub Action inspect the final IPA/AAB, surface deterministic findings, and compare a release with the last store-approved baseline. StoreReady Cloud adds release history, policy correlation, store integrations and team workflows.
+StoreReady is a local-first release preflight engine. The open-source CLI and GitHub Action inspect the final IPA/AAB, surface deterministic findings, and compare a release with the last store-approved baseline. StoreReady Cloud adds GitHub sign-in, projects, scoped CI tokens, release history and team workflows.
 
 > Status: early MVP. Rules are intentionally conservative and evidence-based; StoreReady does not pretend to predict Apple or Google review outcomes.
 
@@ -27,16 +27,19 @@ storeready scan --baseline storeready-baseline.json MyApp-2.4.0.ipa
 
 ## StoreReady Cloud: approved-release diff
 
-The key Cloud workflow is:
+Cloud uses GitHub OAuth for people and project-scoped `srp_` tokens for CI.
 
-1. Apple/Google approves a release.
-2. Mark that exact artifact as the approved baseline.
-3. Every later `push` automatically compares the new artifact against that approved release.
-4. New privacy-sensitive permissions and SDK signals are surfaced as release-diff risks.
+The workflow is:
+
+1. Sign in and create a StoreReady project.
+2. Generate a CI token and store it in your secret manager.
+3. After Apple/Google approves a release, mark that artifact as the approved baseline.
+4. Every later `push` compares the new release against that approved baseline.
+5. New privacy-sensitive permissions and SDK signals are surfaced as release-diff risks.
 
 ```bash
-export STOREREADY_CLOUD_URL=http://localhost:8080
-export STOREREADY_API_KEY=local-dev-key
+export STOREREADY_CLOUD_URL=https://your-cloud.example
+export STOREREADY_API_KEY=srp_...
 
 # After this exact release has been approved by the store:
 storeready approve --project my-mobile-app MyApp-2.3.0.ipa
@@ -75,7 +78,7 @@ Cloud-backed release history and automatic approved-release diff:
   with:
     artifact: build/MyApp.ipa
     project: my-mobile-app
-    cloud-url: https://app.storeready.dev
+    cloud-url: https://your-cloud.example
     api-key: ${{ secrets.STOREREADY_API_KEY }}
 ```
 
@@ -110,13 +113,19 @@ A blocker returns exit code `2`. Warnings do not fail CI unless `--fail-on-warni
 
 The CLI remains useful without an account and scans artifacts locally. StoreReady Cloud stores normalized scan/report metadata by default, not customer IPA/AAB binaries.
 
-Planned Cloud features:
-- App Store Connect and Google Play Console correlation
+Cloud already has:
+- GitHub OAuth user sign-in
+- workspaces and projects
+- hashed, revocable project-scoped CI tokens
+- release history
+- approved-release baselines
+
+Planned next:
+- GitHub App and native PR checks
+- App Store Connect / Google Play correlation
 - policy/deadline rule feed
-- project-scoped CI tokens
-- GitHub App and PR checks
-- team dashboards
-- notification and agency workflows
+- organization invites and roles
+- billing and plan enforcement
 
 ## Development
 
