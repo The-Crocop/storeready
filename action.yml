@@ -16,6 +16,18 @@ inputs:
     description: Fail the job when warnings are found
     required: false
     default: "false"
+  project:
+    description: Optional StoreReady Cloud project key. When set, the scan is uploaded.
+    required: false
+    default: ""
+  cloud-url:
+    description: StoreReady Cloud base URL
+    required: false
+    default: ""
+  api-key:
+    description: StoreReady Cloud API key. Pass a GitHub secret.
+    required: false
+    default: ""
 runs:
   using: composite
   steps:
@@ -33,4 +45,7 @@ runs:
         STOREREADY_ARTIFACT: ${{ inputs.artifact }}
         STOREREADY_BASELINE: ${{ inputs.baseline }}
         STOREREADY_FAIL_ON_WARNING: ${{ inputs.fail-on-warning }}
+        STOREREADY_PROJECT: ${{ inputs.project }}
+        STOREREADY_CLOUD_URL: ${{ inputs.cloud-url }}
+        STOREREADY_API_KEY: ${{ inputs.api-key }}
       run: "${{ github.action_path }}/scripts/action.sh"
