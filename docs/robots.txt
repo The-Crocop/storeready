@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://the-crocop.github.io/storeready/sitemap.xml

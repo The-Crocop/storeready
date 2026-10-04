@@ -1,6 +1,11 @@
 # StoreReady
 
+[![CI](https://github.com/The-Crocop/storeready/actions/workflows/ci.yml/badge.svg)](https://github.com/The-Crocop/storeready/actions/workflows/ci.yml)
+[![Pages](https://github.com/The-Crocop/storeready/actions/workflows/pages.yml/badge.svg)](https://github.com/The-Crocop/storeready/actions/workflows/pages.yml)
+
 **Know whether this exact iOS or Android release is store-ready before you submit it.**
+
+**Documentation:** https://the-crocop.github.io/storeready/
 
 StoreReady is a local-first release preflight engine. The open-source CLI and GitHub Action inspect the final IPA/AAB, surface deterministic findings, and compare a release with the last store-approved baseline. StoreReady Cloud adds release history, policy correlation, store integrations and team workflows.
 

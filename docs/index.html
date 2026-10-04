@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>StoreReady — Mobile release preflight for iOS & Android</title>
+  <meta name="description" content="Scan IPA and AAB releases before submission. Detect privacy-sensitive changes, compare against the last approved release, and automate release checks in GitHub Actions.">
+  <meta name="theme-color" content="#111111">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./"><span class="logo">✓</span><span>StoreReady</span></a>
+    <nav>
+      <a href="getting-started.html">Docs</a>
+      <a href="github-action.html">GitHub Action</a>
+      <a href="cloud.html">Cloud</a>
+      <a href="reference.html">CLI reference</a>
+      <a class="button button-small" href="https://github.com/The-Crocop/storeready">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="pill">LOCAL-FIRST MOBILE RELEASE PREFLIGHT</div>
+      <h1>Know what changed <em>before</em> the store reviewer does.</h1>
+      <p class="hero-copy">StoreReady scans your final iOS IPA or Android AAB, detects privacy-sensitive release changes, and compares them with the last store-approved build. Your app binary stays in CI.</p>
+      <div class="hero-actions">
+        <a class="button" href="getting-started.html">Get started</a>
+        <a class="button button-ghost" href="https://github.com/The-Crocop/storeready">View on GitHub</a>
+      </div>
+
+      <div class="terminal" aria-label="Example StoreReady output">
+        <div class="terminal-bar"><span></span><span></span><span></span><code>release.yml</code></div>
+        <pre><span class="muted">$</span> storeready push --project mobile-app MyApp-2.4.0.ipa
+
+<span class="ok">✓</span> IPA structure valid
+<span class="ok">✓</span> Privacy manifest found
+<span class="warn">⚠</span> SR-DIFF-001-background-location
+  New privacy-sensitive permission since approved baseline
+
+<span class="warn">⚠</span> SR-DIFF-002-Firebase-Analytics
+  New SDK signal since approved baseline
+
+Compared against approved release <strong>a83d7c2e91bf</strong>
+<span class="warn">READY WITH REVIEW RISKS</span></pre>
+      </div>
+    </section>
+
+    <section class="trust-row">
+      <div><strong>IPA/AAB stays local</strong><span>Only normalized findings are sent to Cloud.</span></div>
+      <div><strong>Deterministic checks</strong><span>No AI deciding whether a required key exists.</span></div>
+      <div><strong>CI-native</strong><span>CLI, JSON, Markdown, SARIF and GitHub Actions.</span></div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">WHY STOREREADY</p>
+        <h2>A release diff, not another checklist.</h2>
+        <p>Static linting is useful. The bigger risk is what changed since the release Apple or Google already accepted.</p>
+      </div>
+      <div class="grid grid-3">
+        <article class="card">
+          <span class="card-icon">01</span>
+          <h3>Scan the final artifact</h3>
+          <p>Inspect the IPA or AAB that will actually be submitted, not a source-tree approximation.</p>
+        </article>
+        <article class="card">
+          <span class="card-icon">02</span>
+          <h3>Mark the approved release</h3>
+          <p>When a store approves a build, StoreReady records its privacy-sensitive baseline.</p>
+        </article>
+        <article class="card">
+          <span class="card-icon">03</span>
+          <h3>Catch risky drift</h3>
+          <p>New permissions and SDK signals are highlighted automatically on the next release.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section split">
+      <div>
+        <p class="eyebrow">OPEN SOURCE CLI</p>
+        <h2>Useful before you create an account.</h2>
+        <p class="large-copy">Run StoreReady locally, in GitHub Actions, or in any CI environment. Generate terminal, JSON, Markdown or SARIF output.</p>
+        <a class="text-link" href="reference.html">Explore CLI commands →</a>
+      </div>
+      <div class="code-card">
+        <div class="code-label">Shell</div>
+        <pre><code># Scan locally
+storeready scan MyApp.ipa
+
+# Create a local baseline
+storeready baseline MyApp-2.3.0.ipa
+
+# Compare the next release
+storeready scan \
+  --baseline storeready-baseline.json \
+  MyApp-2.4.0.ipa</code></pre>
+      </div>
+    </section>
+
+    <section class="section split reverse">
+      <div class="code-card">
+        <div class="code-label">GitHub Actions</div>
+        <pre><code>- uses: The-Crocop/storeready@main
+  with:
+    artifact: build/MyApp.ipa
+    project: mobile-app
+    cloud-url: https://app.storeready.dev
+    api-key: ${{ secrets.STOREREADY_API_KEY }}</code></pre>
+      </div>
+      <div>
+        <p class="eyebrow">STOREREADY CLOUD</p>
+        <h2>Release memory for your whole team.</h2>
+        <p class="large-copy">Keep release history, approved baselines and normalized compliance signals without uploading your application binary.</p>
+        <a class="text-link" href="cloud.html">How Cloud works →</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">CURRENT COVERAGE</p>
+        <h2>iOS and Android from one release gate.</h2>
+      </div>
+      <div class="grid grid-2">
+        <article class="card platform-card">
+          <div class="platform">iOS</div>
+          <ul>
+            <li>IPA structure and Info.plist</li>
+            <li>PrivacyInfo.xcprivacy presence</li>
+            <li>Privacy-sensitive usage descriptions</li>
+            <li>Common analytics/tracking SDK signals</li>
+            <li>Approved-release diff</li>
+          </ul>
+        </article>
+        <article class="card platform-card">
+          <div class="platform">Android</div>
+          <ul>
+            <li>AAB structure and base manifest</li>
+            <li>Sensitive permission signals</li>
+            <li>Common SDK signals</li>
+            <li>Data Safety review prompts</li>
+            <li>Approved-release diff</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="cta">
+      <p class="eyebrow">START LOCAL</p>
+      <h2>Put a release gate in CI today.</h2>
+      <p>No account required for the open-source scanner.</p>
+      <div class="hero-actions">
+        <a class="button button-light" href="getting-started.html">Read the quick start</a>
+        <a class="button button-outline-light" href="https://github.com/The-Crocop/storeready">Star on GitHub</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand"><span class="logo">✓</span> StoreReady</div>
+    <div class="footer-links">
+      <a href="getting-started.html">Documentation</a>
+      <a href="security.html">Security</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="https://github.com/The-Crocop/storeready">GitHub</a>
+    </div>
+    <p>Open-source scanner licensed under Apache-2.0.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CLI reference — StoreReady</title>
+  <meta name="description" content="StoreReady command-line reference for scan, baseline, push, approve and output formats.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="./"><span class="logo">✓</span><span>StoreReady</span></a><nav><a href="getting-started.html">Docs</a><a href="github-action.html">GitHub Action</a><a href="cloud.html">Cloud</a><a class="active" href="reference.html">CLI reference</a><a class="button button-small" href="https://github.com/The-Crocop/storeready">GitHub</a></nav></header>
+<main class="docs-layout">
+  <aside class="sidebar"><strong>Documentation</strong><a href="getting-started.html">Getting started</a><a href="github-action.html">GitHub Action</a><a href="cloud.html">StoreReady Cloud</a><a class="active" href="reference.html">CLI reference</a><a href="security.html">Security</a><a href="privacy.html">Privacy</a></aside>
+  <article class="docs">
+    <p class="eyebrow">REFERENCE</p><h1>CLI commands</h1>
+    <p class="lead-doc">Flags must appear before the artifact path.</p>
+
+    <h2><code>storeready scan</code></h2>
+    <p>Scan an IPA or AAB locally.</p>
+    <pre><code>storeready scan [flags] &lt;artifact.ipa|artifact.aab&gt;</code></pre>
+    <div class="table-wrap"><table><tbody>
+      <tr><td><code>--format</code></td><td><code>text</code>, <code>json</code>, <code>markdown</code> or <code>sarif</code></td></tr>
+      <tr><td><code>--output</code></td><td>Write report to a file.</td></tr>
+      <tr><td><code>--baseline</code></td><td>Compare against a local baseline JSON.</td></tr>
+      <tr><td><code>--fail-on-warning</code></td><td>Return exit code 1 when warnings are present.</td></tr>
+    </tbody></table></div>
+
+    <h2><code>storeready baseline</code></h2>
+    <p>Create a local baseline from an artifact without blockers.</p>
+    <pre><code>storeready baseline --output approved.json MyApp.ipa</code></pre>
+
+    <h2><code>storeready push</code></h2>
+    <p>Scan locally, optionally compare with the latest Cloud baseline, then upload normalized findings.</p>
+    <pre><code>storeready push --project mobile-app MyApp.ipa</code></pre>
+    <div class="table-wrap"><table><tbody>
+      <tr><td><code>--project</code></td><td>Required Cloud project key.</td></tr>
+      <tr><td><code>--url</code></td><td>Cloud URL or <code>STOREREADY_CLOUD_URL</code>.</td></tr>
+      <tr><td><code>--api-key</code></td><td>Cloud token or <code>STOREREADY_API_KEY</code>.</td></tr>
+      <tr><td><code>--baseline</code></td><td>Use a local baseline instead of Cloud.</td></tr>
+      <tr><td><code>--no-cloud-baseline</code></td><td>Skip approved-release comparison.</td></tr>
+    </tbody></table></div>
+
+    <h2><code>storeready approve</code></h2>
+    <p>Record an artifact as the latest approved baseline for a project/platform.</p>
+    <pre><code>storeready approve --project mobile-app MyApp-2.3.0.ipa</code></pre>
+
+    <h2><code>storeready version</code></h2>
+    <pre><code>storeready version</code></pre>
+
+    <h2>Exit codes</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>0</code></td><td>No blocker. Warnings allowed unless strict mode is enabled.</td></tr>
+        <tr><td><code>1</code></td><td>Warnings found while <code>--fail-on-warning</code> is enabled.</td></tr>
+        <tr><td><code>2</code></td><td>Blocker, invalid arguments or operational error.</td></tr>
+      </tbody>
+    </table></div>
+  </article>
+</main>
+<footer><div class="footer-brand"><span class="logo">✓</span> StoreReady</div><div class="footer-links"><a href="security.html">Security</a><a href="privacy.html">Privacy</a><a href="https://github.com/The-Crocop/storeready">GitHub</a></div></footer>
+</body>
+</html>
