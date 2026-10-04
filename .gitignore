@@ -1,0 +1,8 @@
+storeready
+*.exe
+*.out
+dist/
+.idea/
+.vscode/
+.DS_Store
+storeready-baseline.json

@@ -1,0 +1,36 @@
+name: StoreReady
+description: Preflight compliance checks for iOS IPA and Android AAB release artifacts
+author: StoreReady
+branding:
+  icon: check-circle
+  color: green
+inputs:
+  artifact:
+    description: Path to the .ipa or .aab artifact
+    required: true
+  baseline:
+    description: Optional StoreReady approved-release baseline JSON
+    required: false
+    default: ""
+  fail-on-warning:
+    description: Fail the job when warnings are found
+    required: false
+    default: "false"
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-go@v6
+      with:
+        go-version-file: ${{ github.action_path }}/go.mod
+        cache: false
+    - name: Build StoreReady
+      shell: bash
+      run: go build -o "$RUNNER_TEMP/storeready" ./cmd/storeready
+      working-directory: ${{ github.action_path }}
+    - name: Scan release artifact
+      shell: bash
+      env:
+        STOREREADY_ARTIFACT: ${{ inputs.artifact }}
+        STOREREADY_BASELINE: ${{ inputs.baseline }}
+        STOREREADY_FAIL_ON_WARNING: ${{ inputs.fail-on-warning }}
+      run: "${{ github.action_path }}/scripts/action.sh"
