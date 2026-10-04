@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>GitHub Action — StoreReady</title>
-  <meta name="description" content="Run StoreReady release preflight checks in GitHub Actions.">
+  <meta name="description" content="Run StoreReady release preflight checks in GitHub Actions with optional project-scoped StoreReady Cloud history.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
   <aside class="sidebar"><strong>Documentation</strong><a href="getting-started.html">Getting started</a><a class="active" href="github-action.html">GitHub Action</a><a href="cloud.html">StoreReady Cloud</a><a href="reference.html">CLI reference</a><a href="security.html">Security</a><a href="privacy.html">Privacy</a></aside>
   <article class="docs">
     <p class="eyebrow">CI/CD</p><h1>GitHub Action</h1>
-    <p class="lead-doc">Run StoreReady immediately after your release artifact is built. The check appears in the workflow summary and returns a meaningful exit code.</p>
+    <p class="lead-doc">Run StoreReady immediately after your release artifact is built. The report appears in the workflow summary and uses CI-friendly exit codes.</p>
 
     <h2>Local-only preflight</h2>
     <pre><code>name: Mobile release preflight
@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      # Your build/download step must produce the IPA or AAB first.
+      # Produce/download the final IPA or AAB first.
 
       - uses: The-Crocop/storeready@main
         with:
@@ -41,15 +41,17 @@ jobs:
     fail-on-warning: "true"</code></pre>
 
     <h2>Cloud-backed release history</h2>
-    <p>When <code>project</code> is set, the action uses <code>storeready push</code>. The artifact remains on the runner; only normalized scan metadata is sent to Cloud.</p>
+    <p>Create a project in StoreReady Cloud and generate a CI token. Store it as a GitHub Actions secret such as <code>STOREREADY_API_KEY</code>.</p>
     <pre><code>- uses: The-Crocop/storeready@main
   with:
     artifact: build/MyApp.ipa
     project: mobile-app
-    cloud-url: https://app.storeready.dev
+    cloud-url: https://your-cloud.example
     api-key: ${{ secrets.STOREREADY_API_KEY }}</code></pre>
 
-    <div class="note"><strong>Secret handling:</strong> keep the Cloud token in GitHub Actions secrets. Never commit it to the repository.</div>
+    <p>When <code>project</code> is configured, the action uses <code>storeready push</code>. The IPA/AAB remains on the runner. StoreReady Cloud receives only normalized release metadata.</p>
+
+    <div class="note"><strong>Secret handling:</strong> each <code>srp_</code> token is scoped to one StoreReady project, stored server-side only as a SHA-256 hash, and can be revoked without affecting other projects.</div>
 
     <h2>Inputs</h2>
     <div class="table-wrap"><table>
@@ -58,16 +60,16 @@ jobs:
         <tr><td><code>artifact</code></td><td>Yes</td><td>Path to the final IPA or AAB.</td></tr>
         <tr><td><code>baseline</code></td><td>No</td><td>Local approved-release baseline JSON.</td></tr>
         <tr><td><code>fail-on-warning</code></td><td>No</td><td>Fail with exit code 1 when warnings exist.</td></tr>
-        <tr><td><code>project</code></td><td>No</td><td>Cloud project key. Enables upload.</td></tr>
-        <tr><td><code>cloud-url</code></td><td>With project</td><td>StoreReady Cloud base URL.</td></tr>
-        <tr><td><code>api-key</code></td><td>With project</td><td>Cloud API key/token.</td></tr>
+        <tr><td><code>project</code></td><td>No</td><td>Cloud project key. Enables Cloud history.</td></tr>
+        <tr><td><code>cloud-url</code></td><td>With project</td><td>Your StoreReady Cloud base URL.</td></tr>
+        <tr><td><code>api-key</code></td><td>With project</td><td>The project's <code>srp_</code> CI token.</td></tr>
       </tbody>
     </table></div>
 
     <h2>Pin releases</h2>
-    <p>During development, examples use <code>@main</code>. Once StoreReady v1 is released, production workflows should pin a stable major or exact tag.</p>
+    <p>During early development, examples use <code>@main</code>. Once StoreReady v1 is released, production workflows should pin a stable major or exact tag.</p>
 
-    <div class="next"><strong>Next:</strong> <a href="cloud.html">Understand approved-release baselines in StoreReady Cloud →</a></div>
+    <div class="next"><strong>Next:</strong> <a href="cloud.html">Understand StoreReady Cloud projects and approved baselines →</a></div>
   </article>
 </main>
 <footer><div class="footer-brand"><span class="logo">✓</span> StoreReady</div><div class="footer-links"><a href="security.html">Security</a><a href="privacy.html">Privacy</a><a href="https://github.com/The-Crocop/storeready">GitHub</a></div></footer>
