@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/The-Crocop/storeready/internal/model"
+	"github.com/The-Crocop/storepreflight/internal/model"
 )
 
 func TestPush(t *testing.T) {
@@ -16,7 +16,7 @@ func TestPush(t *testing.T) {
 		if r.Method != http.MethodPost || r.URL.Path != "/api/v1/scans" {
 			t.Fatalf("unexpected request: %s %s", r.Method, r.URL.Path)
 		}
-		if r.Header.Get("X-StoreReady-Key") != "secret" {
+		if r.Header.Get("X-StorePreflight-Key") != "secret" {
 			t.Fatalf("missing API key")
 		}
 		if err := json.NewDecoder(r.Body).Decode(&got); err != nil {
@@ -122,7 +122,7 @@ func TestLatestBaselineNotFound(t *testing.T) {
 }
 
 func TestNewRejectsInvalidURLAndKey(t *testing.T) {
-	if _, err := New("storeready.example", "key"); err == nil {
+	if _, err := New("storepreflight.example", "key"); err == nil {
 		t.Fatal("expected invalid URL error")
 	}
 	if _, err := New("https://example.com", ""); err == nil {
