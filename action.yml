@@ -1,6 +1,6 @@
-name: StoreReady
+name: StorePreflight
 description: Preflight compliance checks for iOS IPA and Android AAB release artifacts
-author: StoreReady
+author: StorePreflight
 branding:
   icon: check-circle
   color: green
@@ -9,7 +9,7 @@ inputs:
     description: Path to the .ipa or .aab artifact
     required: true
   baseline:
-    description: Optional StoreReady approved-release baseline JSON
+    description: Optional StorePreflight approved-release baseline JSON
     required: false
     default: ""
   fail-on-warning:
@@ -17,15 +17,15 @@ inputs:
     required: false
     default: "false"
   project:
-    description: Optional StoreReady Cloud project key. When set, the scan is uploaded.
+    description: Optional StorePreflight Cloud project key. When set, the scan is uploaded.
     required: false
     default: ""
   cloud-url:
-    description: StoreReady Cloud base URL
+    description: StorePreflight Cloud base URL
     required: false
     default: ""
   api-key:
-    description: StoreReady Cloud API key. Pass a GitHub secret.
+    description: StorePreflight Cloud API key. Pass a GitHub secret.
     required: false
     default: ""
 runs:
@@ -35,17 +35,17 @@ runs:
       with:
         go-version-file: ${{ github.action_path }}/go.mod
         cache: false
-    - name: Build StoreReady
+    - name: Build StorePreflight
       shell: bash
-      run: go build -o "$RUNNER_TEMP/storeready" ./cmd/storeready
+      run: go build -o "$RUNNER_TEMP/storepreflight" ./cmd/storepreflight
       working-directory: ${{ github.action_path }}
     - name: Scan release artifact
       shell: bash
       env:
-        STOREREADY_ARTIFACT: ${{ inputs.artifact }}
-        STOREREADY_BASELINE: ${{ inputs.baseline }}
-        STOREREADY_FAIL_ON_WARNING: ${{ inputs.fail-on-warning }}
-        STOREREADY_PROJECT: ${{ inputs.project }}
-        STOREREADY_CLOUD_URL: ${{ inputs.cloud-url }}
-        STOREREADY_API_KEY: ${{ inputs.api-key }}
+        STOREPREFLIGHT_ARTIFACT: ${{ inputs.artifact }}
+        STOREPREFLIGHT_BASELINE: ${{ inputs.baseline }}
+        STOREPREFLIGHT_FAIL_ON_WARNING: ${{ inputs.fail-on-warning }}
+        STOREPREFLIGHT_PROJECT: ${{ inputs.project }}
+        STOREPREFLIGHT_CLOUD_URL: ${{ inputs.cloud-url }}
+        STOREPREFLIGHT_API_KEY: ${{ inputs.api-key }}
       run: "${{ github.action_path }}/scripts/action.sh"
