@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://the-crocop.github.io/storeready/sitemap.xml
+Sitemap: https://the-crocop.github.io/storepreflight/sitemap.xml
