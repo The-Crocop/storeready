@@ -2,7 +2,7 @@ package report
 
 import (
 	"encoding/json"
-	"github.com/The-Crocop/storeready/internal/model"
+	"github.com/The-Crocop/storepreflight/internal/model"
 )
 
 func SARIF(result model.ScanResult) ([]byte, error) {
@@ -23,7 +23,7 @@ func SARIF(result model.ScanResult) ([]byte, error) {
 		"$schema":"https://json.schemastore.org/sarif-2.1.0.json",
 		"version":"2.1.0",
 		"runs":[]any{map[string]any{
-			"tool":map[string]any{"driver":map[string]any{"name":"StoreReady"}},
+			"tool":map[string]any{"driver":map[string]any{"name":"StorePreflight"}},
 			"results":results,
 		}},
 	}
