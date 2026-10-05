@@ -1,9 +1,9 @@
 version: 2
-project_name: storeready
+project_name: storepreflight
 builds:
-  - id: storeready
-    main: ./cmd/storeready
-    binary: storeready
+  - id: storepreflight
+    main: ./cmd/storepreflight
+    binary: storepreflight
     ldflags:
       - -s -w -X main.version={{.Version}}
     goos: [linux, darwin, windows]

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/The-Crocop/storeready/internal/model"
+	"github.com/The-Crocop/storepreflight/internal/model"
 )
 
 const applePrivacyManifest = "https://developer.apple.com/documentation/bundleresources/privacy_manifest_files"
@@ -32,14 +32,14 @@ func scanIPA(path string, result model.ScanResult) (model.ScanResult, error) {
 	}
 	if len(infoPlist) == 0 {
 		result.Findings = append(result.Findings, model.Finding{
-			ID: "SR-IOS-001", Severity: model.SeverityBlocker,
+			ID: "SPF-IOS-001", Severity: model.SeverityBlocker,
 			Title: "Info.plist was not found in the application bundle",
 			Fix: "Scan the final exported IPA containing Payload/<App>.app/Info.plist.",
 		})
 	} else {
 		addPassed(&result)
 		result.Findings = append(result.Findings, model.Finding{
-			ID: "SR-IOS-INFO-001", Severity: model.SeverityInfo,
+			ID: "SPF-IOS-INFO-001", Severity: model.SeverityInfo,
 			Title: "Application Info.plist found", Evidence: infoPath,
 		})
 	}
@@ -48,7 +48,7 @@ func scanIPA(path string, result model.ScanResult) (model.ScanResult, error) {
 		addPassed(&result)
 	} else {
 		result.Findings = append(result.Findings, model.Finding{
-			ID: "SR-IOS-002", Severity: model.SeverityWarning,
+			ID: "SPF-IOS-002", Severity: model.SeverityWarning,
 			Title: "No PrivacyInfo.xcprivacy found in the IPA",
 			Fix: "Verify whether the app or included SDKs use APIs that require a privacy manifest.",
 			Source: applePrivacyManifest,
@@ -70,7 +70,7 @@ func scanIPA(path string, result model.ScanResult) (model.ScanResult, error) {
 		if containsText(infoPlist, p.Key) {
 			result.Metadata.Permissions = appendUnique(result.Metadata.Permissions, p.Label)
 			result.Findings = append(result.Findings, model.Finding{
-				ID: "SR-IOS-PERM-" + strings.ToUpper(strings.ReplaceAll(p.Label, "-", "_")),
+				ID: "SPF-IOS-PERM-" + strings.ToUpper(strings.ReplaceAll(p.Label, "-", "_")),
 				Severity: model.SeverityInfo,
 				Title: "Privacy-sensitive capability declared: " + p.Label,
 				Evidence: p.Key,
@@ -92,7 +92,7 @@ func scanIPA(path string, result model.ScanResult) (model.ScanResult, error) {
 	}
 	if len(result.Metadata.SDKs) > 0 {
 		result.Findings = append(result.Findings, model.Finding{
-			ID: "SR-IOS-020", Severity: model.SeverityWarning,
+			ID: "SPF-IOS-020", Severity: model.SeverityWarning,
 			Title: "Third-party SDKs with privacy implications detected",
 			Evidence: strings.Join(result.Metadata.SDKs, ", "),
 			Fix: "Confirm App Store privacy answers and required SDK privacy manifests are still accurate for this release.",

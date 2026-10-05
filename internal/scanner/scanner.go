@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/The-Crocop/storeready/internal/model"
+	"github.com/The-Crocop/storepreflight/internal/model"
 )
 
 func Scan(path string) (model.ScanResult, error) {
@@ -42,7 +42,7 @@ func Scan(path string) (model.ScanResult, error) {
 	default:
 		base.Platform = "unknown"
 		base.Findings = append(base.Findings, model.Finding{
-			ID: "SR-ARTIFACT-001", Severity: model.SeverityBlocker,
+			ID: "SPF-ARTIFACT-001", Severity: model.SeverityBlocker,
 			Title: "Unsupported artifact type",
 			Evidence: filepath.Ext(path),
 			Fix: "Provide an iOS .ipa or Android .aab release artifact.",

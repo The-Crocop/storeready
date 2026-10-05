@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/The-Crocop/storeready/internal/model"
+	"github.com/The-Crocop/storepreflight/internal/model"
 )
 
 type Baseline struct {
@@ -58,7 +58,7 @@ func Load(path string) (Baseline, error) {
 func ApplyDiff(result *model.ScanResult, old Baseline) {
 	if old.Platform != "" && old.Platform != result.Platform {
 		result.Findings = append(result.Findings, model.Finding{
-			ID: "SR-DIFF-000", Severity: model.SeverityBlocker,
+			ID: "SPF-DIFF-000", Severity: model.SeverityBlocker,
 			Title: "Baseline platform does not match artifact",
 			Evidence: old.Platform + " -> " + result.Platform,
 		})
@@ -66,7 +66,7 @@ func ApplyDiff(result *model.ScanResult, old Baseline) {
 	}
 	for _, p := range difference(result.Metadata.Permissions, old.Permissions) {
 		result.Findings = append(result.Findings, model.Finding{
-			ID: "SR-DIFF-001-" + p, Severity: model.SeverityWarning,
+			ID: "SPF-DIFF-001-" + p, Severity: model.SeverityWarning,
 			Title: "New privacy-sensitive permission since approved baseline",
 			Evidence: p,
 			Fix: "Confirm store privacy/data-safety metadata and review notes cover this new capability.",
@@ -74,7 +74,7 @@ func ApplyDiff(result *model.ScanResult, old Baseline) {
 	}
 	for _, sdk := range difference(result.Metadata.SDKs, old.SDKs) {
 		result.Findings = append(result.Findings, model.Finding{
-			ID: "SR-DIFF-002-" + sdk, Severity: model.SeverityWarning,
+			ID: "SPF-DIFF-002-" + sdk, Severity: model.SeverityWarning,
 			Title: "New SDK signal since approved baseline",
 			Evidence: sdk,
 			Fix: "Review privacy disclosures, SDK manifests and store declarations for this dependency.",

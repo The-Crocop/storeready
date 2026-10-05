@@ -1,8 +1,8 @@
-storeready
+storepreflight
 *.exe
 *.out
 dist/
 .idea/
 .vscode/
 .DS_Store
-storeready-baseline.json
+storepreflight-baseline.json

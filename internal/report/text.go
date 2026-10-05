@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/The-Crocop/storeready/internal/model"
+	"github.com/The-Crocop/storepreflight/internal/model"
 )
 
 func Text(result model.ScanResult) string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "StoreReady\n\nArtifact: %s\nPlatform: %s\nSHA256: %s\n\n", result.Artifact, result.Platform, result.SHA256)
+	fmt.Fprintf(&b, "StorePreflight\n\nArtifact: %s\nPlatform: %s\nSHA256: %s\n\n", result.Artifact, result.Platform, result.SHA256)
 	for _, f := range result.Findings {
 		fmt.Fprintf(&b, "%s %s — %s\n", symbol(f.Severity), f.ID, f.Title)
 		if f.Evidence != "" { fmt.Fprintf(&b, "   Evidence: %s\n", f.Evidence) }
@@ -22,7 +22,7 @@ func Text(result model.ScanResult) string {
 
 func Markdown(result model.ScanResult) string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "## StoreReady release preflight\n\n**%s** · %s · `%s`\n\n", result.Artifact, result.Platform, short(result.SHA256))
+	fmt.Fprintf(&b, "## StorePreflight release preflight\n\n**%s** · %s · `%s`\n\n", result.Artifact, result.Platform, short(result.SHA256))
 	fmt.Fprintf(&b, "**%d passed · %d warnings · %d blockers**\n\n", result.Summary.Passed, result.Summary.Warnings, result.Summary.Blockers)
 	for _, f := range result.Findings {
 		fmt.Fprintf(&b, "- %s **%s** — %s", symbol(f.Severity), f.ID, f.Title)

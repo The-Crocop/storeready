@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/The-Crocop/storeready/internal/baseline"
-	"github.com/The-Crocop/storeready/internal/cloud"
-	"github.com/The-Crocop/storeready/internal/model"
-	"github.com/The-Crocop/storeready/internal/report"
-	"github.com/The-Crocop/storeready/internal/scanner"
+	"github.com/The-Crocop/storepreflight/internal/baseline"
+	"github.com/The-Crocop/storepreflight/internal/cloud"
+	"github.com/The-Crocop/storepreflight/internal/model"
+	"github.com/The-Crocop/storepreflight/internal/report"
+	"github.com/The-Crocop/storepreflight/internal/scanner"
 )
 
 var version = "dev"
@@ -42,19 +42,19 @@ func main() {
 }
 
 func usage() {
-	fmt.Fprintf(os.Stderr, `StoreReady - release preflight for iOS and Android
+	fmt.Fprintf(os.Stderr, `StorePreflight - release preflight for iOS and Android
 
 Usage:
-  storeready scan [flags] <artifact.ipa|artifact.aab>
-  storeready push [flags] <artifact.ipa|artifact.aab>
-  storeready approve [flags] <artifact.ipa|artifact.aab>
-  storeready baseline [flags] <artifact.ipa|artifact.aab>
-  storeready version
+  storepreflight scan [flags] <artifact.ipa|artifact.aab>
+  storepreflight push [flags] <artifact.ipa|artifact.aab>
+  storepreflight approve [flags] <artifact.ipa|artifact.aab>
+  storepreflight baseline [flags] <artifact.ipa|artifact.aab>
+  storepreflight version
 
 Cloud flags:
-  --project <key>       StoreReady Cloud project key
-  --url <url>           Cloud base URL; defaults to STOREREADY_CLOUD_URL
-  --api-key <key>       Cloud API key; defaults to STOREREADY_API_KEY
+  --project <key>       StorePreflight Cloud project key
+  --url <url>           Cloud base URL; defaults to STOREPREFLIGHT_CLOUD_URL
+  --api-key <key>       Cloud API key; defaults to STOREPREFLIGHT_API_KEY
 
 Push automatically compares with the latest approved Cloud baseline unless
 --baseline points to a local baseline or --no-cloud-baseline is set.
@@ -91,9 +91,9 @@ func runScan(args []string) int {
 
 func runPush(args []string) int {
 	fs := flag.NewFlagSet("push", flag.ContinueOnError)
-	project := fs.String("project", "", "StoreReady Cloud project key")
-	cloudURL := fs.String("url", envOr("STOREREADY_CLOUD_URL", ""), "StoreReady Cloud base URL")
-	apiKey := fs.String("api-key", envOr("STOREREADY_API_KEY", ""), "StoreReady Cloud API key")
+	project := fs.String("project", "", "StorePreflight Cloud project key")
+	cloudURL := fs.String("url", envOr("STOREPREFLIGHT_CLOUD_URL", ""), "StorePreflight Cloud base URL")
+	apiKey := fs.String("api-key", envOr("STOREPREFLIGHT_API_KEY", ""), "StorePreflight Cloud API key")
 	format := fs.String("format", "text", "text, json, markdown or sarif")
 	output := fs.String("output", "", "write report to file")
 	baselinePath := fs.String("baseline", "", "compare against a local approved-release baseline")
@@ -156,15 +156,15 @@ func runPush(args []string) int {
 		fmt.Fprintln(os.Stderr, err)
 		return 2
 	}
-	fmt.Fprintf(os.Stderr, "Uploaded StoreReady scan %s for project %s\n", record.ID, record.ProjectKey)
+	fmt.Fprintf(os.Stderr, "Uploaded StorePreflight scan %s for project %s\n", record.ID, record.ProjectKey)
 	return resultExitCode(result, *failOnWarning)
 }
 
 func runApprove(args []string) int {
 	fs := flag.NewFlagSet("approve", flag.ContinueOnError)
-	project := fs.String("project", "", "StoreReady Cloud project key")
-	cloudURL := fs.String("url", envOr("STOREREADY_CLOUD_URL", ""), "StoreReady Cloud base URL")
-	apiKey := fs.String("api-key", envOr("STOREREADY_API_KEY", ""), "StoreReady Cloud API key")
+	project := fs.String("project", "", "StorePreflight Cloud project key")
+	cloudURL := fs.String("url", envOr("STOREPREFLIGHT_CLOUD_URL", ""), "StorePreflight Cloud base URL")
+	apiKey := fs.String("api-key", envOr("STOREPREFLIGHT_API_KEY", ""), "StorePreflight Cloud API key")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
@@ -210,7 +210,7 @@ func runApprove(args []string) int {
 
 func runBaseline(args []string) int {
 	fs := flag.NewFlagSet("baseline", flag.ContinueOnError)
-	output := fs.String("output", "storeready-baseline.json", "baseline file")
+	output := fs.String("output", "storepreflight-baseline.json", "baseline file")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
