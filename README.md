@@ -1,62 +1,62 @@
-# StoreReady
+# StorePreflight
 
-[![CI](https://github.com/The-Crocop/storeready/actions/workflows/ci.yml/badge.svg)](https://github.com/The-Crocop/storeready/actions/workflows/ci.yml)
-[![Pages](https://github.com/The-Crocop/storeready/actions/workflows/pages.yml/badge.svg)](https://github.com/The-Crocop/storeready/actions/workflows/pages.yml)
+[![CI](https://github.com/The-Crocop/storepreflight/actions/workflows/ci.yml/badge.svg)](https://github.com/The-Crocop/storepreflight/actions/workflows/ci.yml)
+[![Pages](https://github.com/The-Crocop/storepreflight/actions/workflows/pages.yml/badge.svg)](https://github.com/The-Crocop/storepreflight/actions/workflows/pages.yml)
 
 **Know whether this exact iOS or Android release is store-ready before you submit it.**
 
-**Documentation:** https://the-crocop.github.io/storeready/
+**Documentation:** https://the-crocop.github.io/storepreflight/
 
-StoreReady is a local-first release preflight engine. The open-source CLI and GitHub Action inspect the final IPA/AAB, surface deterministic findings, and compare a release with the last store-approved baseline. StoreReady Cloud adds GitHub sign-in, projects, scoped CI tokens, release history and team workflows.
+StorePreflight is a local-first release preflight engine. The open-source CLI and GitHub Action inspect the final IPA/AAB, surface deterministic findings, and compare a release with the last store-approved baseline. StorePreflight Cloud adds GitHub sign-in, projects, scoped CI tokens, release history and team workflows.
 
-> Status: early MVP. Rules are intentionally conservative and evidence-based; StoreReady does not pretend to predict Apple or Google review outcomes.
+> Status: early MVP. Rules are intentionally conservative and evidence-based; StorePreflight does not pretend to predict Apple or Google review outcomes.
 
 ## Quick start
 
 ```bash
-go run ./cmd/storeready scan MyApp.ipa
-go run ./cmd/storeready scan --format json app-release.aab
+go run ./cmd/storepreflight scan MyApp.ipa
+go run ./cmd/storepreflight scan --format json app-release.aab
 ```
 
 Local baseline files still work:
 
 ```bash
-storeready baseline MyApp-2.3.0.ipa
-storeready scan --baseline storeready-baseline.json MyApp-2.4.0.ipa
+storepreflight baseline MyApp-2.3.0.ipa
+storepreflight scan --baseline storepreflight-baseline.json MyApp-2.4.0.ipa
 ```
 
-## StoreReady Cloud: approved-release diff
+## StorePreflight Cloud: approved-release diff
 
-Cloud uses GitHub OAuth for people and project-scoped `srp_` tokens for CI.
+Cloud uses GitHub OAuth for people and project-scoped `spf_` tokens for CI.
 
 The workflow is:
 
-1. Sign in and create a StoreReady project.
+1. Sign in and create a StorePreflight project.
 2. Generate a CI token and store it in your secret manager.
 3. After Apple/Google approves a release, mark that artifact as the approved baseline.
 4. Every later `push` compares the new release against that approved baseline.
 5. New privacy-sensitive permissions and SDK signals are surfaced as release-diff risks.
 
 ```bash
-export STOREREADY_CLOUD_URL=https://your-cloud.example
-export STOREREADY_API_KEY=srp_...
+export STOREPREFLIGHT_CLOUD_URL=https://your-cloud.example
+export STOREPREFLIGHT_API_KEY=spf_...
 
 # After this exact release has been approved by the store:
-storeready approve --project my-mobile-app MyApp-2.3.0.ipa
+storepreflight approve --project my-mobile-app MyApp-2.3.0.ipa
 
 # During the next release:
-storeready push --project my-mobile-app MyApp-2.4.0.ipa
+storepreflight push --project my-mobile-app MyApp-2.4.0.ipa
 ```
 
 Example result:
 
 ```text
 Compared against approved Cloud baseline a83d7c2e91bf
-⚠️ SR-DIFF-001-background-location — New privacy-sensitive permission since approved baseline
-⚠️ SR-DIFF-002-Firebase Analytics — New SDK signal since approved baseline
+⚠️ SPF-DIFF-001-background-location — New privacy-sensitive permission since approved baseline
+⚠️ SPF-DIFF-002-Firebase Analytics — New SDK signal since approved baseline
 ```
 
-The artifact itself stays local. StoreReady Cloud receives the artifact SHA-256 plus normalized readiness counts, permissions and SDK signals.
+The artifact itself stays local. StorePreflight Cloud receives the artifact SHA-256 plus normalized readiness counts, permissions and SDK signals.
 
 Use `--no-cloud-baseline` when a particular scan intentionally should not compare against the approved baseline. Passing `--baseline <file>` takes precedence over the Cloud baseline.
 
@@ -65,21 +65,21 @@ Use `--no-cloud-baseline` when a particular scan intentionally should not compar
 Local-only scan:
 
 ```yaml
-- uses: The-Crocop/storeready@main
+- uses: The-Crocop/storepreflight@main
   with:
     artifact: build/MyApp.ipa
-    baseline: .storeready/approved.json
+    baseline: .storepreflight/approved.json
 ```
 
 Cloud-backed release history and automatic approved-release diff:
 
 ```yaml
-- uses: The-Crocop/storeready@main
+- uses: The-Crocop/storepreflight@main
   with:
     artifact: build/MyApp.ipa
     project: my-mobile-app
     cloud-url: https://your-cloud.example
-    api-key: ${{ secrets.STOREREADY_API_KEY }}
+    api-key: ${{ secrets.STOREPREFLIGHT_API_KEY }}
 ```
 
 For production use, pin a released major version once v1 is published.
@@ -111,7 +111,7 @@ A blocker returns exit code `2`. Warnings do not fail CI unless `--fail-on-warni
 
 ## Product direction
 
-The CLI remains useful without an account and scans artifacts locally. StoreReady Cloud stores normalized scan/report metadata by default, not customer IPA/AAB binaries.
+The CLI remains useful without an account and scans artifacts locally. StorePreflight Cloud stores normalized scan/report metadata by default, not customer IPA/AAB binaries.
 
 Cloud already has:
 - GitHub OAuth user sign-in
@@ -132,7 +132,7 @@ Planned next:
 ```bash
 go test ./...
 go vet ./...
-go build ./cmd/storeready
+go build ./cmd/storepreflight
 ```
 
 ## License
