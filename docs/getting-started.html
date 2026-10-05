@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Getting started — StoreReady</title>
-  <meta name="description" content="Install and run StoreReady against iOS IPA and Android AAB releases.">
+  <title>Getting started — StorePreflight</title>
+  <meta name="description" content="Install and run StorePreflight against iOS IPA and Android AAB releases.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="topbar"><a class="brand" href="./"><span class="logo">✓</span><span>StoreReady</span></a><nav><a class="active" href="getting-started.html">Docs</a><a href="github-action.html">GitHub Action</a><a href="cloud.html">Cloud</a><a href="reference.html">CLI reference</a><a class="button button-small" href="https://github.com/The-Crocop/storeready">GitHub</a></nav></header>
+<header class="topbar"><a class="brand" href="./"><span class="logo">✓</span><span>StorePreflight</span></a><nav><a class="active" href="getting-started.html">Docs</a><a href="github-action.html">GitHub Action</a><a href="cloud.html">Cloud</a><a href="reference.html">CLI reference</a><a class="button button-small" href="https://github.com/The-Crocop/storepreflight">GitHub</a></nav></header>
 <main class="docs-layout">
   <aside class="sidebar">
     <strong>Documentation</strong>
     <a class="active" href="getting-started.html">Getting started</a>
     <a href="github-action.html">GitHub Action</a>
-    <a href="cloud.html">StoreReady Cloud</a>
+    <a href="cloud.html">StorePreflight Cloud</a>
     <a href="reference.html">CLI reference</a>
     <a href="security.html">Security</a>
     <a href="privacy.html">Privacy</a>
@@ -21,49 +21,49 @@
   <article class="docs">
     <p class="eyebrow">DOCUMENTATION</p>
     <h1>Getting started</h1>
-    <p class="lead-doc">StoreReady scans the final release artifact before it reaches Apple or Google. Start locally, then add it to CI.</p>
+    <p class="lead-doc">StorePreflight scans the final release artifact before it reaches Apple or Google. Start locally, then add it to CI.</p>
 
     <h2 id="requirements">Requirements</h2>
     <p>To build the CLI from source you need Go 1.23 or newer. A scan itself only needs the final <code>.ipa</code> or <code>.aab</code> artifact.</p>
 
     <h2 id="build">Build the CLI</h2>
-    <pre><code>git clone https://github.com/The-Crocop/storeready.git
-cd storeready
-go build -o storeready ./cmd/storeready
+    <pre><code>git clone https://github.com/The-Crocop/storepreflight.git
+cd storepreflight
+go build -o storepreflight ./cmd/storepreflight
 
-./storeready version</code></pre>
+./storepreflight version</code></pre>
 
     <div class="note"><strong>Release binaries are planned.</strong> Tagged releases already use GoReleaser for macOS, Linux and Windows builds.</div>
 
     <h2 id="scan">Run your first scan</h2>
-    <pre><code>./storeready scan MyApp.ipa
+    <pre><code>./storepreflight scan MyApp.ipa
 
 # or
-./storeready scan app-release.aab</code></pre>
+./storepreflight scan app-release.aab</code></pre>
     <p>A blocker returns exit code <code>2</code>. Warnings are informational by default, which makes the initial rollout safe for existing CI pipelines.</p>
 
     <h2 id="strict">Fail CI on warnings</h2>
-    <pre><code>storeready scan --fail-on-warning MyApp.ipa</code></pre>
+    <pre><code>storepreflight scan --fail-on-warning MyApp.ipa</code></pre>
     <p>With <code>--fail-on-warning</code>, warnings return exit code <code>1</code>. Use this after your team has reviewed and accepted the rule set.</p>
 
     <h2 id="baseline">Compare with an approved release</h2>
     <p>For a completely local workflow, create a baseline from an already-approved artifact:</p>
-    <pre><code>storeready baseline MyApp-2.3.0.ipa
+    <pre><code>storepreflight baseline MyApp-2.3.0.ipa
 
-storeready scan \
-  --baseline storeready-baseline.json \
+storepreflight scan \
+  --baseline storepreflight-baseline.json \
   MyApp-2.4.0.ipa</code></pre>
-    <p>StoreReady flags newly observed privacy-sensitive permissions and SDK signals relative to that baseline.</p>
+    <p>StorePreflight flags newly observed privacy-sensitive permissions and SDK signals relative to that baseline.</p>
 
     <h2 id="outputs">Use machine-readable output</h2>
-    <pre><code>storeready scan --format json MyApp.ipa
-storeready scan --format markdown MyApp.ipa
-storeready scan --format sarif MyApp.ipa</code></pre>
+    <pre><code>storepreflight scan --format json MyApp.ipa
+storepreflight scan --format markdown MyApp.ipa
+storepreflight scan --format sarif MyApp.ipa</code></pre>
     <p>Supported formats are <code>text</code>, <code>json</code>, <code>markdown</code> and <code>sarif</code>.</p>
 
-    <div class="next"><strong>Next:</strong> <a href="github-action.html">Run StoreReady automatically in GitHub Actions →</a></div>
+    <div class="next"><strong>Next:</strong> <a href="github-action.html">Run StorePreflight automatically in GitHub Actions →</a></div>
   </article>
 </main>
-<footer><div class="footer-brand"><span class="logo">✓</span> StoreReady</div><div class="footer-links"><a href="security.html">Security</a><a href="privacy.html">Privacy</a><a href="https://github.com/The-Crocop/storeready">GitHub</a></div></footer>
+<footer><div class="footer-brand"><span class="logo">✓</span> StorePreflight</div><div class="footer-links"><a href="security.html">Security</a><a href="privacy.html">Privacy</a><a href="https://github.com/The-Crocop/storepreflight">GitHub</a></div></footer>
 </body>
 </html>
