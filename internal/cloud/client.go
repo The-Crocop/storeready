@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/The-Crocop/storeready/internal/baseline"
-	"github.com/The-Crocop/storeready/internal/model"
+	"github.com/The-Crocop/storepreflight/internal/baseline"
+	"github.com/The-Crocop/storepreflight/internal/model"
 )
 
 type Client struct {
@@ -204,8 +204,8 @@ func (c *Client) postJSON(ctx context.Context, path string, payload any, target 
 
 func (c *Client) setHeaders(req *http.Request) {
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("User-Agent", "StoreReady CLI")
-	req.Header.Set("X-StoreReady-Key", c.apiKey)
+	req.Header.Set("User-Agent", "StorePreflight CLI")
+	req.Header.Set("X-StorePreflight-Key", c.apiKey)
 }
 
 func responseError(resp *http.Response) error {
