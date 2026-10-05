@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/The-Crocop/storeready/internal/model"
+	"github.com/The-Crocop/storepreflight/internal/model"
 )
 
 const googleDataSafety = "https://support.google.com/googleplay/android-developer/answer/10787469"
@@ -21,7 +21,7 @@ func scanAAB(path string, result model.ScanResult) (model.ScanResult, error) {
 		addPassed(&result)
 	} else {
 		result.Findings = append(result.Findings, model.Finding{
-			ID: "SR-ANDROID-001", Severity: model.SeverityBlocker,
+			ID: "SPF-ANDROID-001", Severity: model.SeverityBlocker,
 			Title: "BundleConfig.pb missing",
 			Fix: "Provide the final Android App Bundle produced by the Android build toolchain.",
 		})
@@ -40,7 +40,7 @@ func scanAAB(path string, result model.ScanResult) (model.ScanResult, error) {
 	}
 	if len(manifest) == 0 {
 		result.Findings = append(result.Findings, model.Finding{
-			ID: "SR-ANDROID-002", Severity: model.SeverityBlocker,
+			ID: "SPF-ANDROID-002", Severity: model.SeverityBlocker,
 			Title: "Base AndroidManifest.xml missing",
 			Fix: "Provide an AAB containing base/manifest/AndroidManifest.xml.",
 		})
@@ -61,7 +61,7 @@ func scanAAB(path string, result model.ScanResult) (model.ScanResult, error) {
 		if containsText(manifest, p.Value) {
 			result.Metadata.Permissions = appendUnique(result.Metadata.Permissions, p.Label)
 			result.Findings = append(result.Findings, model.Finding{
-				ID: "SR-ANDROID-PERM-" + strings.ToUpper(strings.ReplaceAll(p.Label, "-", "_")),
+				ID: "SPF-ANDROID-PERM-" + strings.ToUpper(strings.ReplaceAll(p.Label, "-", "_")),
 				Severity: model.SeverityInfo,
 				Title: "Privacy-sensitive Android permission detected: " + p.Label,
 				Evidence: p.Value,
@@ -84,7 +84,7 @@ func scanAAB(path string, result model.ScanResult) (model.ScanResult, error) {
 	}
 	if len(result.Metadata.Permissions) > 0 || len(result.Metadata.SDKs) > 0 {
 		result.Findings = append(result.Findings, model.Finding{
-			ID: "SR-ANDROID-020", Severity: model.SeverityWarning,
+			ID: "SPF-ANDROID-020", Severity: model.SeverityWarning,
 			Title: "Review Google Play Data safety answers for this release",
 			Evidence: "Sensitive permissions or SDK signals were detected.",
 			Fix: "Confirm the Play Console Data safety declaration matches the data practices of this exact build.",
@@ -92,9 +92,9 @@ func scanAAB(path string, result model.ScanResult) (model.ScanResult, error) {
 		})
 	}
 	result.Findings = append(result.Findings, model.Finding{
-		ID: "SR-ANDROID-030", Severity: model.SeverityWarning,
+		ID: "SPF-ANDROID-030", Severity: model.SeverityWarning,
 		Title: "targetSdk policy validation requires decoded manifest metadata",
-		Fix: "StoreReady Cloud will correlate targetSdk and current Play policy deadlines; full binary decoding is planned for the next scanner milestone.",
+		Fix: "StorePreflight Cloud will correlate targetSdk and current Play policy deadlines; full binary decoding is planned for the next scanner milestone.",
 	})
 	result.Recount()
 	return result, nil
